@@ -62,7 +62,13 @@ class Editor():
         return self.cartoon
     
     def oilpainting(self,img):
-        self.oil = cv.xphoto.oilPainting(img,5,1)
+        kernel_size = 7
+        median_filtered = cv.medianBlur(img, kernel_size)
+        num_levels = 8
+        quantized = cv.convertScaleAbs(cv.divide(img, 255.0 / (num_levels - 1)))
+        quantized = cv.multiply(quantized, 255.0 / (num_levels - 1))
+        smoothed = cv.bilateralFilter(median_filtered, d=9, sigmaColor=75, sigmaSpace=75)
+        self.oil = cv.bitwise_and(smoothed, quantized)
 
         return self.oil
 
