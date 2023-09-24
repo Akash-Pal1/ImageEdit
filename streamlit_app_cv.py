@@ -1,5 +1,5 @@
-import cv2 as cv
 import streamlit as st
+import cv2 as cv
 import numpy as np
 import all_functions as all
 from PIL import Image
