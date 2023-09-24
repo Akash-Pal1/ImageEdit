@@ -1,4 +1,5 @@
 numpy==1.24.3
+opengl-filesystem
 opencv_contrib_python
 opencv_python
 Pillow
