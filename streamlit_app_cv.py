@@ -129,6 +129,8 @@ with st.sidebar:
         captions=['Apply filters to your photos', "Flip Images ", "Blur Images to the intensity you want"]
     )
 
+st.image("imageedit_cover.jpg",caption="Credits to Unsplash")
+
 
 def apply_filter_sec():
     editor = Editor()
