@@ -1,7 +1,6 @@
 import streamlit as st
 import cv2 as cv
 import numpy as np
-import all_functions as all
 from PIL import Image
 import tempfile
 
@@ -61,16 +60,10 @@ class Editor():
 
         return self.cartoon
     
-    def oilpainting(self,img):
-        kernel_size = 7
-        median_filtered = cv.medianBlur(img, kernel_size)
-        num_levels = 8
-        quantized = cv.convertScaleAbs(cv.divide(img, 255.0 / (num_levels - 1)))
-        quantized = cv.multiply(quantized, 255.0 / (num_levels - 1))
-        smoothed = cv.bilateralFilter(median_filtered, d=9, sigmaColor=75, sigmaSpace=75)
-        self.oil = cv.bitwise_and(smoothed, quantized)
-
-        return self.oil
+    def Pixels(self,img, block_size=10):
+        resized = cv.resize(img, (img.shape[1] // block_size, img.shape[0] // block_size))
+        self.pix = cv.resize(resized, (img.shape[1], img.shape[0]), interpolation=cv.INTER_NEAREST)
+        return self.pix
 
     def sepia(self,img):
         img = cv.cvtColor(img,cv.COLOR_BGR2RGB)
@@ -138,10 +131,10 @@ with st.sidebar:
 
 
 def apply_filter_sec():
-    editor = all.Editor()
+    editor = Editor()
     st.title("Apply Filters to Images")
     st.markdown(f"**Apply your favourite filter to your images. The filter available are listed in the form of button in the below.**")
-    filter = st.radio("Part 1",['Sepia','Canny','Inverse','GrayScale','HDR','Cartoonify','Winter','Summer','Oil Paint', 'Sharpen'],horizontal=True,label_visibility='hidden')
+    filter = st.radio("Part 1",['Sepia','Canny','Inverse','GrayScale','HDR','Cartoonify','Winter','Summer','Pixels', 'Sharpen'],horizontal=True,label_visibility='hidden')
 
 
     original, filtered = st.columns(2)
@@ -211,13 +204,13 @@ def apply_filter_sec():
             st.title("With filter")
             st.image(editor.summer_effect(img))
 
-    if filter == 'Oil Paint':
+    if filter == 'Pixels':
         with original:
             st.title("Original")
             st.image(img)
         with filtered:
             st.title("With filter")
-            st.image(editor.oilpainting(img))
+            st.image(editor.Pixels(img))
 
     if filter == 'Sharpen':
         with original:
@@ -335,13 +328,13 @@ def apply_filter_sec():
                     temp_file_path = temp_file.name
                     Image.fromarray(img_c).save(temp_file_path)
 
-        if filter == 'Oil Paint':
+        if filter == 'Pixels':
             with original:
                 st.title("Original")
                 st.image(img_file)
             with filtered:
                 st.title("With filter")
-                img_c = editor.oilpainting(img_file)
+                img_c = editor.Pixels(img_file)
                 st.image(img_c)
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_file:
                     temp_file_path = temp_file.name
@@ -371,7 +364,7 @@ def apply_filter_sec():
 
 
 def flip_func():
-    editor = all.Editor()
+    editor = Editor()
 
     st.title("Flip Your Images")
     st.markdown("**Flip Your Images as per your choice**")
@@ -467,7 +460,7 @@ def flip_func():
             )
 
 def blur_sec():
-    editor = all.Editor()
+    editor = Editor()
     st.title("Blur Your Images")
     st.markdown("**Blur Your Images as per your choice with your Chosen Intensity**")
 
