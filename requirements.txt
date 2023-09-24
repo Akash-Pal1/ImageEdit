@@ -1,6 +1,6 @@
 numpy==1.24.3
 opengl-filesystem
 opencv_contrib_python
-opencv_python
+opencv-python-headless
 Pillow
 streamlit==1.26.0
